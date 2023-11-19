@@ -11,7 +11,7 @@ import {
 
 export default function Bridge() {
 
-	const scrollAdr = "0x3808d0F2F25839E73e0Fbf711368fC4aE80c7763";
+	const scrollAdr = "0xb75d7e84517e1504C151B270255B087Fd746D34C";
 	const zkEvmAdr = "";
 	const lineaAdr = "0x711A70b4e2af3388a0E4061e53AAd2267439270D";
 	const l1BridgeAdr = "0x932f80fc3d023e8dac12a3ae2a8611fdd3cf360f";
@@ -61,9 +61,9 @@ export default function Bridge() {
 				},
 			],
 			functionName: 'sendMessage',
-			args: [l1BridgeAdr, parseEther(debouncedAmount), encode, 1000000],
+			args: [l1BridgeAdr, (parseEther(debouncedAmount)/BigInt(2)), encode, 1000000],
 			value: parseEther(debouncedAmount),
-			
+
 		});
 	const { data, error, isError, write } = useContractWrite(config);
 
