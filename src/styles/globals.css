@@ -74,3 +74,47 @@ header {
 	position: fixed;
 	width: 100%;
 }
+
+.zk-form {
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.zk-form input{
+	width: 300px;
+	background-color: black;
+	color: white;
+	border: 1px solid white;
+	height: 50px;
+	border-radius: 5px;
+	text-align: right;
+}
+
+.zk-form select{
+	width: 300px;
+	background-color: black;
+	color: white;
+	border: 1px solid white;
+	height: 50px;
+	border-radius: 5px;
+}
+
+.zk-form label{
+	margin-right: 10px;
+	font-size: 16px;
+}
+
+.zk-form button{
+	cursor: pointer;
+	margin-top: 20px;
+	font-size: 16px;
+	width: 300px;
+	background-color: transparent;
+	color: white;
+	border: 1px solid white;
+	height: 50px;
+	border-radius: 5px;
+}

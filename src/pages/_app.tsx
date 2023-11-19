@@ -13,17 +13,15 @@ import {
 	mainnet,
 	optimism,
 	polygon,
+	polygonZkEvmTestnet,
+	scrollTestnet,
+	lineaTestnet
 } from "wagmi/chains";
 
 const chains = [
-	mainnet,
-	polygon,
-	avalanche,
-	arbitrum,
-	bsc,
-	optimism,
-	gnosis,
-	fantom,
+	polygonZkEvmTestnet,
+	scrollTestnet,
+	lineaTestnet
 ];
 
 // 1. Get projectID at https://cloud.walletconnect.com
