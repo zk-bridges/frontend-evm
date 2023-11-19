@@ -40,7 +40,7 @@ export default function Home() {
 				<div className={styles.header}>
 					<div className={styles.logo}>
 						<Image
-							src="frontend-evm/logo.svg"
+							src="logo.svg"
 							alt="WalletConnect Logo"
 							height="32"
 							width="203"

@@ -1,6 +1,13 @@
 
 
 export default function Bridge() {
+
+	const validate = async ()=>{
+
+		alert("Token submit, wait 30 min to get it an other chain")
+	};
+
+
 	return (
 		<div>
 			<div className="zk-form">
@@ -37,7 +44,7 @@ export default function Bridge() {
 			</div>
 			
 			<div className="zk-form" style={{justifyContent:'center'}}>
-				<button>Validate</button>
+				<button onClick={()=> validate()}>Validate</button>
 			</div>
 		</div>)
 }
