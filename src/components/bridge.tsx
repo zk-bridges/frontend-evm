@@ -6,18 +6,20 @@ import {
 	useContractWrite,
 	usePrepareContractWrite,
 	useWaitForTransaction,
-
+	useNetwork
 } from 'wagmi';
 
 export default function Bridge() {
 
 	const scrollAdr = "0xb75d7e84517e1504C151B270255B087Fd746D34C";
-	const zkEvmAdr = "";
+	const zkEvmAdr = "0xF6BEEeBB578e214CA9E23B0e9683454Ff88Ed2A7";
 	const lineaAdr = "0x711A70b4e2af3388a0E4061e53AAd2267439270D";
 	const l1BridgeAdr = "0x932f80fc3d023e8dac12a3ae2a8611fdd3cf360f";
 
 	//const [{ data: signData }, getSigner] = useSigner();
 	const { address, connector, isConnected } = useAccount()
+
+	const { chain, chains } = useNetwork()
 
 	const [from, setFrom] = useState<string>(scrollAdr)
 	const [debouncedFrom] = useDebounce(from, 500)
@@ -28,7 +30,7 @@ export default function Bridge() {
 	const [to, setTo] = useState<string>("59140")
 	const [debouncedTo] = useDebounce(to, 500)
 
-	const [amount, setAmount] = useState('0.01')
+	const [amount, setAmount] = useState('0.001')
 	const [debouncedAmount] = useDebounce(amount, 500)
 
 	const [encode, setEncode] = useState<string>("")
@@ -44,10 +46,10 @@ export default function Bridge() {
 		setEncode(val);
 	}, [account, debouncedTo]);
 
-	const { config,
+	const { config: config,
 		error: prepareError,
 		isError: isPrepareError } = usePrepareContractWrite({
-			address: debouncedFrom as any,
+			address: chain?.id == 534353 ? scrollAdr : undefined as any,
 			abi: [
 				{
 					name: 'sendMessage',
@@ -61,11 +63,44 @@ export default function Bridge() {
 				},
 			],
 			functionName: 'sendMessage',
-			args: [l1BridgeAdr, (parseEther(debouncedAmount)/BigInt(2)), encode, 1000000],
+			args: [l1BridgeAdr, (parseEther(debouncedAmount) / BigInt(2)), encode, 1000000],
 			value: parseEther(debouncedAmount),
 
 		});
+
 	const { data, error, isError, write } = useContractWrite(config);
+
+	const { config: config2,
+		error: prepareError2,
+		isError: isPrepareError2 } = usePrepareContractWrite({
+			address: zkEvmAdr as any,
+			abi: [
+				{
+					name: 'bridgeMessage',
+					type: 'function',
+					stateMutability: 'payable',
+					inputs: [{ "internalType": "uint32", "name": "destinationNetwork", "type": "uint32" },
+					{ "internalType": "address", "name": "destinationAddress", "type": "address" },
+					{ "internalType": "bool", "name": "forceUpdateGlobalExitRoot", "type": "bool" },
+					{
+						"internalType": "bytes", "name": "metadata", "type": "bytes"
+					}],
+					outputs: [],
+				},
+			],
+			functionName: 'bridgeMessage',
+			args: [0x0, l1BridgeAdr, 0x0, encode],
+			value: parseEther(debouncedAmount),
+
+		});
+
+
+	const { data: data2, error: error2, isError: isError2, write: write2 } = useContractWrite(config2);
+
+	const { isLoading: isLoading2, isSuccess: isSuccess2 } = useWaitForTransaction({
+		hash: data2?.hash,
+	})
+
 
 	const { isLoading, isSuccess } = useWaitForTransaction({
 		hash: data?.hash,
@@ -73,9 +108,14 @@ export default function Bridge() {
 
 	const validate = async () => {
 
-		console.log("debouncedAmount", parseEther(debouncedAmount));
-		write?.();
-		console.log("write", write);
+		if (from == scrollAdr) {
+			write?.();
+			console.log("write", write);
+		} else {
+
+			write2?.();
+			console.log("write2", write2);
+		}
 	};
 
 
@@ -118,6 +158,15 @@ export default function Bridge() {
 
 
 			{isSuccess && (
+				<div>
+					Successfully sent {amount} ether to {to}
+					<div>
+						<a>Tx id, wait 30 min to finish bridge : {data?.hash}</a>
+					</div>
+				</div>
+			)}
+
+			{isSuccess2 && (
 				<div>
 					Successfully sent {amount} ether to {to}
 					<div>
